@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ESP32 Evolution — TikTok Slide</title>
+
+<style>
+
+/* =========================================
+   GLOBAL
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #111;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #f5f7fa;
+}
+
+
+/* =========================================
+   MAIN SLIDE
+========================================= */
+
+.slide {
+  width: 1080px;
+  height: 1920px;
+
+  margin: 0 auto;
+
+  padding: 60px 65px 60px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 88% 8%,
+      rgba(35, 105, 255, .18),
+      transparent 28%
+    ),
+
+    radial-gradient(
+      circle at 92% 72%,
+      rgba(0, 210, 170, .12),
+      transparent 25%
+    ),
+
+    linear-gradient(
+      145deg,
+      #07101d 0%,
+      #0b1422 52%,
+      #07101b 100%
+    );
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.header {
+  width: 100%;
+
+  margin-bottom: 40px;
+}
+
+h1 {
+  margin: 0;
+
+  font-size: 64px;
+
+  line-height: 1.05;
+
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  margin-top: 10px;
+
+  color: #9eb3c9;
+
+  font-size: 28px;
+
+  letter-spacing: .5px;
+}
+
+
+/* =========================================
+   PAGINATION / SLIDE PAGES
+========================================= */
+
+.page {
+  display: none;
+  height: 1450px;
+  position: relative;
+}
+
+.page.active {
+  display: block;
+}
+
+
+/* =========================================
+   LEFT TIMELINE (ADJUSTED FOR SINGLE PAGE)
+========================================= */
+
+.timeline {
+  width: 58%;
+
+  height: 100%;
+
+  overflow: hidden;
+
+  padding-right: 10px;
+}
+
+
+/* =========================================
+   TIMELINE ITEM
+========================================= */
+
+.item {
+  border-left: 6px solid #2e83ff;
+
+  padding: 10px 0 0 25px;
+
+  margin-bottom: 0px;
+}
+
+.item:last-child {
+  padding-bottom: 0;
+
+  margin-bottom: 0;
+}
+
+
+/* =========================================
+   YEAR
+========================================= */
+
+.year {
+  font-size: 42px;
+
+  font-weight: 800;
+
+  line-height: 1.1;
+
+  letter-spacing: -.3px;
+}
+
+.name {
+  color: #65b7ff;
+}
+
+
+/* =========================================
+   TAGLINE
+========================================= */
+
+.tagline {
+  font-size: 32px;
+
+  font-weight: 700;
+
+  margin-top: 15px;
+
+  line-height: 1.2;
+
+  color: #00d2aa;
+}
+
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.desc {
+  color: #b7c6d6;
+
+  font-size: 26px;
+
+  line-height: 1.3;
+
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+
+/* =========================================
+   SPECIFICATION
+========================================= */
+
+.spec {
+  color: #dfe8f1;
+
+  font-size: 24px;
+
+  line-height: 1.4;
+
+  margin-top: 15px;
+}
+
+.label {
+  color: #8fbfff;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   RIGHT IMAGE COLUMN (PER PAGE)
+========================================= */
+
+.image-zone {
+  position: absolute;
+
+  left: 620px;
+
+  right: 0px;
+
+  top: 0px;
+
+  height: 800px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+
+/* =========================================
+   INDIVIDUAL IMAGE BOX
+========================================= */
+
+.image-box {
+  flex: 1;
+
+  min-height: 0;
+
+  border: 3px dashed rgba(150, 190, 230, .55);
+
+  border-radius: 12px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+  color: #7f9bb5;
+
+  background: rgba(255,255,255,.025);
+
+  font-size: 24px;
+
+  line-height: 1.3;
+
+  padding: 15px;
+
+  overflow: hidden;
+
+  position: relative;
+}
+
+
+/* =========================================
+   IMAGE BOX TITLE
+========================================= */
+
+.image-box strong {
+  display: block;
+
+  color: #b9d4ef;
+
+  font-size: 32px;
+
+  margin-bottom: 10px;
+}
+
+
+/* =========================================
+   ACTUAL IMAGE
+========================================= */
+
+.image-box img {
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: contain;
+
+  border-radius: 6px;
+
+  display: block;
+}
+
+
+/* =========================================
+   IMAGE LABEL
+========================================= */
+
+.image-label {
+  position: absolute;
+
+  bottom: 15px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  background: rgba(7, 16, 29, 0.85);
+
+  color: #00d2aa;
+
+  border: 1px solid rgba(0, 210, 170, 0.4);
+
+  padding: 6px 16px;
+
+  border-radius: 20px;
+
+  font-size: 20px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+
+/* =========================================
+   NAVIGATION CONTROLS
+========================================= */
+
+.nav-controls {
+  position: absolute;
+
+  bottom: 120px;
+
+  left: 65px;
+
+  right: 65px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  z-index: 20;
+}
+
+.nav-btn {
+  background: #2e83ff;
+
+  color: #ffffff;
+
+  border: none;
+
+  padding: 20px 40px;
+
+  font-size: 26px;
+
+  font-weight: bold;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: #1a6cd8;
+}
+
+.nav-btn:disabled {
+  background: #2a3a4e;
+
+  color: #5d7088;
+
+  cursor: not-allowed;
+}
+
+.page-counter {
+  font-size: 28px;
+
+  font-weight: bold;
+
+  color: #9eb3c9;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+  position: absolute;
+
+  left: 65px;
+
+  bottom: 35px;
+
+  width: 90%;
+
+  border-top: 2px solid rgba(120, 170, 220, .3);
+
+  padding-top: 15px;
+
+  font-size: 24px;
+
+  font-weight: 900;
+
+  line-height: 1.2;
+
+  background: transparent;
+
+  z-index: 10;
+}
+
+.footer span {
+  color: #62b4ff;
+}
+
+
+/* =========================================
+   PRINT
+========================================= */
+
+@media print {
+
+  body {
+    background: white;
+  }
+
+  .slide {
+    margin: 0;
+  }
+
+  .page {
+    display: block !important;
+    page-break-after: always;
+  }
+
+  .nav-controls {
+    display: none;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="slide">
+
+
+  <!-- =====================================
+       HEADER
+  ====================================== -->
+
+  <div class="header">
+
+    <h1>
+      🚀 ESP32 EVOLUTION
+    </h1>
+
+    <div class="subtitle">
+      2016 → 2026 • From the original ESP32 to the growing ESP32 family
+    </div>
+
+  </div>
+
+
+
+  <!-- =====================================
+       PAGED CONTENT
+  ====================================== -->
+
+  <!-- PAGE 1: ESP32 -->
+  <div class="page active">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2016 — <span class="name">ESP32</span>
+        </div>
+        <div class="tagline">
+          The Original
+        </div>
+        <div class="desc">
+          The chip that started the ESP32 family.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Wi-Fi + Bluetooth Classic + BLE
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          48-pin QFN48
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          34
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-WROOM-32 / WROVER
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/ESP32_esp-wroom-32.jpg" alt="ESP32 SoC Chip">
+        <div class="image-label">ESP32 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 2: ESP32-S2 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2020 — <span class="name">ESP32-S2</span>
+        </div>
+        <div class="tagline">
+          Wi-Fi MCU
+        </div>
+        <div class="desc">
+          A secure, USB-enabled chip for IoT.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Wi-Fi + Native USB
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          56-pin QFN56
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          43
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-S2-WROOM / S2-MINI-1
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-S2
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Espressif_ESP32-S2_chip.jpg" alt="ESP32-S2 SoC Chip">
+        <div class="image-label">ESP32-S2 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 3: ESP32-C3 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2020 — <span class="name">ESP32-C3</span>
+        </div>
+        <div class="tagline">
+          RISC-V MCU
+        </div>
+        <div class="desc">
+          An efficient RISC-V chip for affordable IoT.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          RISC-V + Wi-Fi + BLE
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          32-pin QFN32
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          22
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-C3-WROOM-02 / C3-MINI-1
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-C3
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/ESP32-C3-WROOM-02-N4.jpg" alt="ESP32-C3 SoC Chip">
+        <div class="image-label">ESP32-C3 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 4: ESP32-S3 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2021 — <span class="name">ESP32-S3</span>
+        </div>
+        <div class="tagline">
+          AI &amp; High-Performance MCU
+        </div>
+        <div class="desc">
+          Built for AI, edge processing, and demanding applications.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          AI + Vector Instructions + Wi-Fi + BLE
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          56-pin QFN56
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          45
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-S3-WROOM-1 / S3-MINI-1
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-S3
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/ESP32-S3-WROOM-1.jpg" alt="ESP32-S3 SoC Chip">
+        <div class="image-label">ESP32-S3 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 5: ESP32-H2 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2021 — <span class="name">ESP32-H2</span>
+        </div>
+        <div class="tagline">
+          Low-Power Wireless SoC
+        </div>
+        <div class="desc">
+          Built for low-power mesh and smart-home IoT.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          BLE + Zigbee + Thread
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          32-pin QFN32
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          19
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-H2-MINI-1 / H2-WROOM-03
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-H2
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP32-H2-MINI-1.png" alt="ESP32-H2 SoC Chip">
+        <div class="image-label">ESP32-H2 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 6: ESP32-C2 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2022 — <span class="name">ESP32-C2</span>
+        </div>
+        <div class="tagline">
+          Entry-Level Wireless MCU
+        </div>
+        <div class="desc">
+          A compact, affordable choice for everyday IoT.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Wi-Fi + BLE
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          28-pin QFN28
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          14
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP8684-MINI-1 / ESP8684-WROOM-03
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-C2
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP8684-MINI-1.png" alt="ESP32-C2 SoC Chip">
+        <div class="image-label">ESP32-C2 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 7: ESP32-C6 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2023 — <span class="name">ESP32-C6</span>
+        </div>
+        <div class="tagline">
+          Wi-Fi 6 &amp; IoT Connectivity
+        </div>
+        <div class="desc">
+          Modern Wi-Fi 6 and mesh networking for IoT.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Wi-Fi 6 + BLE + Zigbee + Thread
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          40-pin QFN40
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          30
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-C6-WROOM-1 / C6-MINI-1
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-C6
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP32-C6-WROOM-1.png" alt="ESP32-C6 SoC Chip">
+        <div class="image-label">ESP32-C6 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 8: ESP32-C5 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2024 — <span class="name">ESP32-C5</span>
+        </div>
+        <div class="tagline">
+          Dual-Band Wi-Fi 6 SoC
+        </div>
+        <div class="desc">
+          High-speed 2.4 GHz + 5 GHz Wi-Fi.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Dual-Band Wi-Fi 6 + BLE
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          48-pin QFN48
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          29
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-C5-WROOM-1 / C5-MINI-1
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-C5
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP32-C5-WROOM-1.png" alt="ESP32-C5 SoC Chip">
+        <div class="image-label">ESP32-C5 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 9: ESP32-P4 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2025 — <span class="name">ESP32-P4</span>
+        </div>
+        <div class="tagline">
+          High-Performance RISC-V MCU
+        </div>
+        <div class="desc">
+          Powerful edge computing without built-in wireless.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          High-Performance RISC-V + AI
+        </div>
+        <div class="spec">
+          <span class="label">📌 Wireless:</span>
+          No Built-in Wi-Fi or Bluetooth
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          105-ball QFBGA105
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          55
+        </div>
+        <div class="spec">
+          <span class="label">📦 Platform:</span>
+          ESP32-P4-Function-EV-Board / P4-EYE
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-P4
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP32-P4.png" alt="ESP32-P4 SoC Chip">
+        <div class="image-label">ESP32-P4 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 10: ESP32-C61 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2025 — <span class="name">ESP32-C61</span>
+        </div>
+        <div class="tagline">
+          Affordable Wi-Fi 6 MCU
+        </div>
+        <div class="desc">
+          A cost-effective platform for connected devices.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Wi-Fi 6 + BLE
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          40-pin QFN40
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          30
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-C61-WROOM-1 / C61-MINI-1
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-C61
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP32-C61-WROOM-1.png" alt="ESP32-C61 SoC Chip">
+        <div class="image-label">ESP32-C61 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 11: ESP32-E22 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2026 — <span class="name">ESP32-E22</span>
+        </div>
+        <div class="tagline">
+          Connectivity Co-Processor
+        </div>
+        <div class="desc">
+          Tri-Band Wi-Fi 6E connectivity co-processor for host CPUs.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Tri-Band Wi-Fi 6E + Dual-Mode Bluetooth 5.4
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          M.2 2230 / Integrated SoC Package
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          Flexible Host Interfaces (PCIe 2.1 / SDIO 3.0)
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-E22-M2-1
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Documentation:</span>
+          Espressif ESP32-E22
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP32-E22-M2-1.png" alt="ESP32-E22 Module">
+        <div class="image-label">ESP32-E22 Module</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 12: ESP32-H4 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2026 — <span class="name">ESP32-H4</span>
+        </div>
+        <div class="tagline">
+          Low-Power Wireless SoC
+        </div>
+        <div class="desc">
+          Dual-core RISC-V SoC built for low-power smart-home networks.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Bluetooth 5.4 LE + IEEE 802.15.4 (Zigbee/Thread)
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          Dual-Core RISC-V QFN Package
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          40 Programmable GPIOs
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          Espressif ESP32-H4 Series
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Documentation:</span>
+          Espressif ESP32-H4
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP32-H4.png" alt="ESP32-H4 SoC Chip">
+        <div class="image-label">ESP32-H4 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 13: ESP32-S31 -->
+  <div class="page">
+    <div class="timeline">
+      <section class="item">
+        <div class="year">
+          2026 — <span class="name">ESP32-S31</span>
+        </div>
+        <div class="tagline">
+          Wi-Fi 6 &amp; Multi-Protocol SoC
+        </div>
+        <div class="desc">
+          Dual-Core 32-bit RISC-V SoC running up to 320 MHz for advanced HMI.
+        </div>
+        <div class="spec">
+          <span class="label">📌 Key Features:</span>
+          Wi-Fi 6 + Bluetooth 5.4 (LE & Classic) + 802.15.4 + 1Gbps Ethernet MAC
+        </div>
+        <div class="spec">
+          <span class="label">📌 Package:</span>
+          QFN80 (8 × 8 mm)
+        </div>
+        <div class="spec">
+          <span class="label">📌 GPIO:</span>
+          60 Programmable GPIOs
+        </div>
+        <div class="spec">
+          <span class="label">📦 Module:</span>
+          ESP32-S31-WROOM-1 / S31-WROOM-3
+        </div>
+        <div class="spec">
+          <span class="label">🔗 Datasheet:</span>
+          Espressif ESP32-S31
+        </div>
+      </section>
+    </div>
+    <div class="image-zone">
+      <div class="image-box">
+        <img src="https://dl.espressif.com/dl/hardware/ESP32-S31-WROOM-1.png" alt="ESP32-S31 SoC Chip">
+        <div class="image-label">ESP32-S31 SoC</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- =====================================
+       NAVIGATION CONTROLS
+  ====================================== -->
+
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="changePage(-1)" disabled>◀ BACK</button>
+    <div class="page-counter" id="pageCounter">1 / 13</div>
+    <button class="nav-btn" id="nextBtn" onclick="changePage(1)">NEXT ▶</button>
+  </div>
+
+
+
+  <!-- =====================================
+       FOOTER
+  ====================================== -->
+
+  <div class="footer">
+
+    🔥 FROM 2016 TO 2026
+
+    <br>
+
+    <span>
+      THE ESP32 FAMILY KEEPS GROWING
+    </span>
+
+  </div>
+
+
+</div>
+
+
+
+<!-- =====================================
+     NAVIGATION SCRIPT
+====================================== -->
+
+<script>
+  let currentPage = 0;
+  const pages = document.querySelectorAll('.page');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const pageCounter = document.getElementById('pageCounter');
+
+  function updatePage() {
+    pages.forEach((page, index) => {
+      if (index === currentPage) {
+        page.classList.add('active');
+      } else {
+        page.classList.remove('active');
+      }
+    });
+
+    pageCounter.textContent = `${currentPage + 1} / ${pages.length}`;
+    prevBtn.disabled = (currentPage === 0);
+    nextBtn.disabled = (currentPage === pages.length - 1);
+  }
+
+  function changePage(direction) {
+    currentPage += direction;
+    if (currentPage < 0) currentPage = 0;
+    if (currentPage >= pages.length) currentPage = pages.length - 1;
+    updatePage();
+  }
+</script>
+
+</body>
+</html>
